@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask AI Chat Assistant | Your AI Companion in Chrome</title>
+    <style>
+        :root {
+            --primary: #6366F1;
+            --primary-light: #818CF8;
+            --primary-dark: #4F46E5;
+            --secondary: #EC4899;
+            --secondary-light: #F472B6;
+            --accent: #3B82F6;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray: #9CA3AF;
+            --gradient-start: #6366F1;
+            --gradient-end: #8B5CF6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.6;
+        }
+        
+        header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        nav a {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border-radius: 1rem;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .highlight {
+            color: var(--secondary);
+            background: linear-gradient(to right, var(--secondary), var(--secondary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--dark);
+            max-width: 700px;
+            margin-bottom: 2.5rem;
+        }
+        
+        .cta-button {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3), 0 2px 4px -1px rgba(99, 102, 241, 0.2);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.1);
+        }
+        
+        .browser-mockup {
+            margin-top: 3rem;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .browser-header {
+            background-color: #F3F4F6;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .browser-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot-red {
+            background-color: #EF4444;
+        }
+        
+        .dot-yellow {
+            background-color: #F59E0B;
+        }
+        
+        .dot-green {
+            background-color: #10B981;
+        }
+        
+        .url-bar {
+            background-color: white;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            margin-left: 1rem;
+            flex-grow: 1;
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+        
+        .browser-content {
+            background-color: white;
+            height: 500px;
+            display: flex;
+            position: relative;
+        }
+        
+        .webpage {
+            flex-grow: 1;
+            padding: 1rem;
+            position: relative;
+        }
+        
+        .webpage-content {
+            opacity: 0.3;
+            pointer-events: none;
+            font-size: 0.9rem;
+        }
+        
+        .webpage-content h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .webpage-content p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .selected-text {
+            background-color: rgba(99, 102, 241, 0.2);
+            position: relative;
+            display: inline;
+        }
+        
+        .popup-indicator {
+            position: absolute;
+            top: -25px;
+            right: -15px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .extension {
+            position: absolute;
+            width: 300px;
+            background-color: white;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            top: 100px;
+            right: 50px;
+            z-index: 10;
+        }
+        
+        .extension-header {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .chat {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .message {
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            max-width: 80%;
+        }
+        
+        .user-message {
+            background-color: #DBEAFE;
+            align-self: flex-end;
+        }
+        
+        .ai-message {
+            background-color: #E5E7EB;
+            align-self: flex-start;
+        }
+        
+        .features {
+            padding: 4rem 1.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+        }
+        
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .features-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .features-header h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .features-header p {
+            color: var(--dark);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-icon {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--primary-dark);
+        }
+        
+        .how-it-works {
+            padding: 4rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .how-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .how-header h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            background: linear-gradient(to right, var(--primary), var(--gradient-end));
+            color: white;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .step h3 {
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+        }
+        
+        .testimonials {
+            padding: 4rem 1.5rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+        }
+        
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .testimonial-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .testimonial-header h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .quote {
+            position: relative;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .quote::before {
+            content: '"';
+            font-size: 4rem;
+            position: absolute;
+            top: -2rem;
+            left: -1rem;
+            color: rgba(99, 102, 241, 0.1);
+        }
+        
+        .author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-color: #E5E7EB;
+            margin-right: 1rem;
+            overflow: hidden;
+            border: 2px solid var(--primary-light);
+        }
+        
+        .author-info h4 {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .author-info p {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+        
+        .cta-section {
+            padding: 6rem 1.5rem;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+            border-radius: 1rem;
+            margin-top: 4rem;
+            margin-bottom: 4rem;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .cta-section p {
+            color: var(--dark);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        footer {
+            background: linear-gradient(to right, var(--dark), #374151);
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: #D1D5DB;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            color: #9CA3AF;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.25rem;
+            }
+            
+            .browser-mockup {
+                margin-top: 2rem;
+            }
+            
+            .browser-content {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .extension {
+                position: relative;
+                width: 100%;
+                top: auto;
+                right: auto;
+                margin-top: 2rem;
+            }
+            
+            .features-header h2,
+            .how-header h2,
+            .testimonial-header h2,
+            .cta-section h2 {
+                font-size: 1.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Ask AI
+        </div>
+        <nav>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#testimonials">Testimonials</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="hero">
+            <h1>Your Personal <span class="highlight">AI Assistant</span><br>Just a Text Selection Away</h1>
+            <p class="subtitle">Simply select any text on any webpage, and Ask AI pops up to help you understand, summarize, or research further. Powered by cutting-edge AI technology.</p>
+            <a href="#" class="cta-button">Add to Chrome — It's Free</a>
+            
+            <div class="browser-mockup">
+                <div class="browser-header">
+                    <div class="browser-dots">
+                        <div class="dot dot-red"></div>
+                        <div class="dot dot-yellow"></div>
+                        <div class="dot dot-green"></div>
+                    </div>
+                    <div class="url-bar">https://example.com/article</div>
+                </div>
+                <div class="browser-content">
+                    <div class="webpage">
+                        <div class="webpage-content">
+                            <h2>The Future of Artificial Intelligence</h2>
+                            <p>Artificial intelligence has made remarkable progress in recent years. From virtual assistants to autonomous vehicles, AI technologies are transforming how we live and work.</p>
+                            <p>Machine learning algorithms can now recognize patterns and make predictions with incredible accuracy. This has led to breakthroughs in fields ranging from healthcare to finance.</p>
+                            <p>However, the rapid advancement of AI also raises important questions about ethics, privacy, and the future of work. <span class="selected-text">As these technologies become more sophisticated, we must carefully consider their societal implications<div class="popup-indicator">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </div></span> and develop frameworks to ensure they benefit humanity as a whole.</p>
+                            <p>Looking ahead, researchers are working on more advanced forms of AI that can reason, learn, and adapt in ways that more closely resemble human intelligence.</p>
+                        </div>
+                    </div>
+                    <div class="extension">
+                        <div class="extension-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Ask AI Chat Assistant
+                        </div>
+                        <div class="chat">
+                            <div class="message user-message">
+                                Can you explain what societal implications of AI this article is referring to?
+                            </div>
+                            <div class="message ai-message">
+                                The article suggests that as AI becomes more sophisticated, we need to consider several societal implications:
+                            </div>
+                            <div class="message ai-message">
+                                1. Ethics: How AI systems make decisions
+                                2. Privacy: Data collection concerns
+                                3. Employment: Impact on jobs
+                                4. Inequality: Access to AI benefits
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="features" id="features">
+            <div class="features-container">
+                <div class="features-header">
+                    <h2>Supercharge Your Browsing Experience</h2>
+                    <p>Ask AI Chat Assistant seamlessly integrates with your browser to provide intelligent assistance whenever you need it.</p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Instant Explanations</h3>
+                        <p>Select text you don't understand and get clear, concise explanations directly on the page.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <h3>Text Summarization</h3>
+                        <p>Highlight paragraphs or sections and get instant summaries without leaving the page.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
+                        </div>
+                        <h3>Content Rewriting</h3>
+                        <p>Select text and ask AI to rewrite, simplify, or enhance it with just a few clicks.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Research Assistant</h3>
+                        <p>Highlight key facts and ask for more information or related research without switching tabs.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </div>
+                        <h3>Translation</h3>
+                        <p>Select text in any language and instantly translate it to your preferred language.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <h3>Privacy-Focused</h3>
+                        <p>Your data stays private. We don't store your conversations or track your browsing history.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="how-it-works" id="how-it-works">
+            <div class="how-header">
+                <h2>How It Works</h2>
+                <p>Get started in just a few simple steps</p>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Install the Extension</h3>
+                    <p>Add Ask AI Chat Assistant to Chrome with just one click. No account required.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Select Any Text</h3>
+                    <p>Highlight text on any webpage that you want to get help with.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Click the AI Icon</h3>
+                    <p>Click the Ask AI icon that appears next to your selection.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Get Instant Help</h3>
+                    <p>Ask questions, get explanations, summarize, or research without leaving the page.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="testimonials" id="testimonials">
+            <div class="testimonials-container">
+                <div class
